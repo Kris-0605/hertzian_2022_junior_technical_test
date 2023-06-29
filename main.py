@@ -158,8 +158,9 @@ def run_tests(tests: tuple, verbose=True, continue_on_failure=True) -> bool:
     return success
 
 def execute_steam_tests():
-    START_TIME = 1625008316 # 2 years ago today
-    END_TIME = 1656544316 # 1 year ago today
+    # You must input a date! Half-way through a day still works, but makes the unit test fail due to data loss from converting to a date!
+    START_TIME = time.mktime(time.strptime("2021-06-30", "%Y-%m-%d")) # 2 years ago today
+    END_TIME = time.mktime(time.strptime("2022-06-30", "%Y-%m-%d")) # 1 year ago today
     crawler = SteamReviewCrawler("1382330", "Persona", "Persona 5 Strikers", start_date=START_TIME, end_date=END_TIME) # Nice, I looked up the appID
     crawler.dump_json_out("1382330.json")
     with open("1382330.json", "r") as f:
