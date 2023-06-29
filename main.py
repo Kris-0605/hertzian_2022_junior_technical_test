@@ -1,8 +1,28 @@
 import json
 import time
 import uuid
+import requests
 
 class ReviewCrawler: # Generic crawler
+    NUMBER_OF_RETRIES = 5
+    RETRY_DELAY = 1
+
+    def make_request(self, endpoint: str, json={}, url_encoded={}) -> dict:
+        '''
+        Makes request to endpoint with JSON and/or URL encoded data if necessary
+        If errors, retries for self.NUMBER_OF_RETRIES before raising an error
+        Upon retry, waits for self.RETRY_DELAY seconds before retrying
+        JSON and URL encoded data should be dictionaries
+        '''
+        # I know I don't have to include JSON encoding for this task, but it's common for API endpoints
+        # and it would save someone from having to change the code to add it later for another site
+        for _ in range(self.NUMBER_OF_RETRIES):
+            try:
+                return requests.get(endpoint, json=json if json else None, data=url_encoded if url_encoded else None)
+            except:
+                time.sleep(self.RETRY_DELAY) # Maybe we're getting rate limited?
+        raise requests.ConnectionError(f"Something went wrong connecting to {endpoint} with JSON input {json} and URL encoded input {url_encoded}")
+
     def dump_json_out(self, filename: str):
         pass
 
