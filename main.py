@@ -85,7 +85,7 @@ class SteamReviewCrawler(ReviewCrawler): # Inherits from ReviewCrawler, only con
             new_data.append({
                 "id": str(uuid.uuid5(uuid.NAMESPACE_DNS, str(x["recommendationid"]))), # Generates version 5 UUID from unique recommendation ID
                 "author": str(uuid.uuid5(uuid.NAMESPACE_DNS, str(x["author"]["steamid"]))), # Generates version 5 (hased, unreversible) UUID from unique steam user ID
-                "date": f"{time_obj.tm_year}-{time_obj.tm_mon}-{time_obj.tm_mday}", # Formatting into yyyy-mm-dd format
+                "date": f"{time_obj.tm_year}-{time_obj.tm_mon:02}-{time_obj.tm_mday:02}", # Formatting into yyyy-mm-dd format
                 "hours": int(x["author"]["playtime_at_review"]), # Could be changed to playtime_forever, not specified, this seemed more useful
                 "content": x["review"],
                 "comments": int(x["comment_count"]),

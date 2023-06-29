@@ -1,0 +1,34 @@
+This is a manually added file showing the output of tests
+
+Test 1 succeeded
+Test 2 succeeded
+Test 3 succeeded
+Test 4 succeeded
+Test 5 succeeded
+Test 6 succeeded
+Test 7 succeeded
+Test 8 succeeded
+Test 9 succeeded
+Test 10 succeeded
+Test 11 failed
+Test 12 succeeded
+Test 13 failed
+Test 14 succeeded
+Traceback (most recent call last):
+  File "C:\Users\User\OneDrive\Programming\hertzian_2022_junior_technical_test\main.py", line 184, in <module>
+    execute_steam_tests()
+  File "C:\Users\User\OneDrive\Programming\hertzian_2022_junior_technical_test\main.py", line 176, in execute_steam_tests
+    if run_tests(tests):
+       ^^^^^^^^^^^^^^^^
+  File "C:\Users\User\OneDrive\Programming\hertzian_2022_junior_technical_test\main.py", line 129, in run_tests
+    if test(): # Test succeeded
+       ^^^^^^
+  File "C:\Users\User\OneDrive\Programming\hertzian_2022_junior_technical_test\main.py", line 166, in <lambda>
+    lambda: all(1 <= int(x["date"][5:7]) <= 12 for x in data),
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\User\OneDrive\Programming\hertzian_2022_junior_technical_test\main.py", line 166, in <genexpr>
+    lambda: all(1 <= int(x["date"][5:7]) <= 12 for x in data),
+                     ^^^^^^^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: '6-'
+
+Tests for date formatting have failed. Diagnosis: I forgot to add leading zeroes when formatting.
