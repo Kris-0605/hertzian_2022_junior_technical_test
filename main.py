@@ -104,7 +104,8 @@ def run_tests(tests: tuple[function], verbose=True, continue_on_failure=True) ->
 def execute_steam_tests():
     crawler = SteamReviewCrawler("1382330", "Persona", "Persona 5 Strikers") # Nice, I looked up the appID
     crawler.dump_json_out("1382330.json")
-    data = json.load("1382330.json")
+    with open("1382330.json", "r") as f:
+        data = json.load(f)
     tests = (
         lambda: len(data) <= 5000, # "no more than 5000 reviews"
         # "Franchise, gameName, and source are defined at function invocation."
