@@ -64,15 +64,16 @@ class ReviewCrawler: # Generic crawler
                 break
         return self.data
     
-    def __filter_reviews(self, date1, date2, timestamp_key=lambda entry: entry["timestamp"]):
+    def filter_reviews(self, date1, date2, timestamp_key=lambda entry: entry["timestamp"]):
         '''
         The task to "only crawl between two dates" confuses me, because the Steam API doesn't let you do that.
         Instead, you'd have to crawl until that date, and then filter out the ones you didn't want.
         So, that's what this function does.
         '''
-        pass
+        # "data = data for every entry where the timestamp is between the two given dates"
+        self.data = [x for x in self.data if date1 <= timestamp_key(x) <= date2]
 
-    def __sort_reviews(self):
+    def sort_reviews(self):
         pass
 
     def dump_json_out(self, filename: str):
@@ -86,7 +87,8 @@ class SteamReviewCrawler(ReviewCrawler): # Inherits from ReviewCrawler, only con
             f"https://store.steampowered.com/appreviews/{appID}",
             url_encoded={"json": "1", "num_per_page": "100", "filter": "updated"}, # More could be specified, but nothing was given in the PDF, I would ask about more if this was the real thing
             cursor="*",
-            completion_condition=lambda review_crawler: len(review_crawler.data) >= 5000,
+            #completion_condition=lambda review_crawler: len(review_crawler.data) >= 5000,
+            # Removed completion condition because we are filtering out reviews, so we need more than 5000 to output 5000 to account for filtering out
         )
         self.data = self.__process_data(self.data)
     
