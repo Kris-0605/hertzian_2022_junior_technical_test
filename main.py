@@ -81,7 +81,7 @@ class ReviewCrawler: # Generic crawler
             json.dump(self.data, f, indent=4)
 
 class SteamReviewCrawler(ReviewCrawler): # Inherits from ReviewCrawler, only contains methods specific to Steam
-    def __init__(self, appID, franchise, gameName):
+    def __init__(self, appID, franchise, gameName, start_date=0, end_date=0):
         self.__franchise, self.__gameName = franchise, gameName
         self.follow_cursor(
             f"https://store.steampowered.com/appreviews/{appID}",
@@ -90,6 +90,8 @@ class SteamReviewCrawler(ReviewCrawler): # Inherits from ReviewCrawler, only con
             #completion_condition=lambda review_crawler: len(review_crawler.data) >= 5000,
             # Removed completion condition because we are filtering out reviews, so we need more than 5000 to output 5000 to account for filtering out
         )
+        if start_date and end_date:
+            self.filter_reviews(start_date, end_date, timestamp_key=lambda entry: entry["timestamp_updated"])
         self.data = self.__process_data(self.data)
     
     def __process_data(self, old_data):
@@ -158,7 +160,7 @@ def run_tests(tests: tuple, verbose=True, continue_on_failure=True) -> bool:
 def execute_steam_tests():
     START_TIME = 1625008316 # 2 years ago today
     END_TIME = 1656544316 # 1 year ago today
-    crawler = SteamReviewCrawler("1382330", "Persona", "Persona 5 Strikers") # Nice, I looked up the appID
+    crawler = SteamReviewCrawler("1382330", "Persona", "Persona 5 Strikers", start_date=START_TIME, end_date=END_TIME) # Nice, I looked up the appID
     crawler.dump_json_out("1382330.json")
     with open("1382330.json", "r") as f:
         data = json.load(f)

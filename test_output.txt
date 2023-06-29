@@ -19,7 +19,9 @@ Test 16 succeeded
 Test 17 succeeded
 Test 18 succeeded
 Test 19 succeeded
-All tests ran successfully.
+Test 20 failed
+Test 21 failed
+Something went wrong, at least one test failed.
 
-SUCCESS!
-All tests now run successfully, and I have a JSON with 5000 unique reviews.
+Okay... Test 21 is expected, because I haven't implemented it yet.
+But Test 20... yep, don't know what happened there. More investigation required.
