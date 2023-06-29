@@ -62,7 +62,8 @@ class ReviewCrawler: # Generic crawler
         return self.data
 
     def dump_json_out(self, filename: str):
-        pass
+        with open(filename, "w") as f:
+            json.dump(self.data, f, indent=4)
 
 class SteamReviewCrawler(ReviewCrawler): # Inherits from ReviewCrawler, only contains methods specific to Steam
     def __init__(self, appID, franchise, gameName):
