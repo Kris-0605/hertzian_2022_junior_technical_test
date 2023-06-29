@@ -68,7 +68,7 @@ class ReviewCrawler: # Generic crawler
 class SteamReviewCrawler(ReviewCrawler): # Inherits from ReviewCrawler, only contains methods specific to Steam
     def __init__(self, appID, franchise, gameName):
         self.__franchise, self.__gameName = franchise, gameName
-        self.__follow_cursor(
+        super().__follow_cursor(
             f"https://store.steampowered.com/appreviews/{appID}",
             url_encoded={"json": "1", "num_per_page": "100"}, # More could be specified, but nothing was given in the PDF, I would ask about more if this was the real thing
             cursor="*",
