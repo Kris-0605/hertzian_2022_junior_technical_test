@@ -63,6 +63,17 @@ class ReviewCrawler: # Generic crawler
             except:
                 break
         return self.data
+    
+    def __filter_reviews(self, date1, date2, timestamp_key=lambda entry: entry["timestamp"]):
+        '''
+        The task to "only crawl between two dates" confuses me, because the Steam API doesn't let you do that.
+        Instead, you'd have to crawl until that date, and then filter out the ones you didn't want.
+        So, that's what this function does.
+        '''
+        pass
+
+    def __sort_reviews(self):
+        pass
 
     def dump_json_out(self, filename: str):
         with open(filename, "w") as f:
@@ -143,6 +154,8 @@ def run_tests(tests: tuple, verbose=True, continue_on_failure=True) -> bool:
     return success
 
 def execute_steam_tests():
+    START_TIME = 1625008316 # 2 years ago today
+    END_TIME = 1656544316 # 1 year ago today
     crawler = SteamReviewCrawler("1382330", "Persona", "Persona 5 Strikers") # Nice, I looked up the appID
     crawler.dump_json_out("1382330.json")
     with open("1382330.json", "r") as f:
@@ -177,7 +190,12 @@ def execute_steam_tests():
         lambda: all(uuid.UUID(x["id"], version=5) for x in data),
         # Verify that "id" is unique
         lambda: len(set(x["id"] for x in data)) == len(data),
-        # Then all that's left is OOP, which I don't think I can reasonably test with a function, and the stretch goals which will be added later
+        # Stretch goals!
+        # Checks that all entries are between the given dates
+        # In hindsight I probably could've used this formatting tool instead of writing my own code for it
+        lambda: all(START_TIME <= time.mktime(time.strptime(x["date"], "%Y-%m-%d")) <= END_TIME for x in data),
+        # Checks that data is equivalent to the same data sorted first by date, then by ID
+        lambda: data == sorted(data, key=lambda x: (time.mktime(time.strptime(x["date"], "%Y-%m-%d")), x["id"])),
     )
     if run_tests(tests):
         print("All tests ran successfully.")
