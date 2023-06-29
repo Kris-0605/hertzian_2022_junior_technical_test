@@ -114,7 +114,7 @@ class SteamReviewCrawler(ReviewCrawler): # Inherits from ReviewCrawler, only con
 
 
 # A pipeline like this will probably already exist, but I made a simple one for this project
-def run_tests(tests: tuple[function], verbose=True, continue_on_failure=True) -> bool:
+def run_tests(tests: tuple, verbose=True, continue_on_failure=True) -> bool:
     '''
     Runs tests, returns a boolean True or False of whether they were successful.
     Expects iterable of functions, functions are tests to be ran.
@@ -180,4 +180,4 @@ def execute_steam_tests():
         return False
 
 if __name__ == "__main__":
-    pass
+    execute_steam_tests()
