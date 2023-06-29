@@ -18,7 +18,7 @@ class ReviewCrawler: # Generic crawler
         # and it would save someone from having to change the code to add it later for another site
         for _ in range(self.NUMBER_OF_RETRIES):
             try:
-                return requests.get(endpoint, json=json if json else None, data=url_encoded if url_encoded else None)
+                return requests.get(endpoint, json=json if json else None, params=url_encoded if url_encoded else None)
             except:
                 time.sleep(self.RETRY_DELAY) # Maybe we're getting rate limited?
         raise requests.ConnectionError(f"Something went wrong connecting to {endpoint} with JSON input {json} and URL encoded input {url_encoded}")
