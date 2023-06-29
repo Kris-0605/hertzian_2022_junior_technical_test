@@ -23,6 +23,44 @@ class ReviewCrawler: # Generic crawler
                 time.sleep(self.RETRY_DELAY) # Maybe we're getting rate limited?
         raise requests.ConnectionError(f"Something went wrong connecting to {endpoint} with JSON input {json} and URL encoded input {url_encoded}")
 
+    def follow_cursor(self,
+                      endpoint: str,
+                      json={},
+                      url_encoded={},
+                      cursor=None,
+                      cursor_key=lambda raw_data: raw_data["cursor"],
+                      data_key=lambda raw_data: raw_data["reviews"],
+                      completion_condition=None,
+                      cursor_injection=lambda json, url_encoded, cursor: url_encoded.update({"cursor": cursor}),
+                      ) -> list:
+        '''
+        API endpoints will often have a cursor, where you get your next batch of results by passing the cursor into the next request
+        This function does that for you until completion_condition is met or the cursor is is not found in the returned data
+        endpoint, json and url_encoded are all data to pass to the make_request method
+        cursor is the value that should be passed on the first call, if any
+        cursor_key is a lambda function that gets the key from the JSON data returned by the request, and by default checks the "cursor" key
+        data_key is a lambda function that points to where the JSON array of reviews is, and by default checks the key "reviews"
+        completion_condition is a lambda function used to terminate if a condition is met, such as if a certain number of reviews have been collected.
+        completion_condition should take a single parameter, being the ReviewCrawler object (self).
+        It should return True to terminate, or False otherwise.
+        cursor_injection is a lambda function that takes three parameters, being the JSON data, url_encoded data and the value of the cursor.
+        This lambda function defines where the cursor data should be used in the next request, and by default it adds the cursor to the URL encoded data.
+        This function assumes the data at data_key is in a JSON array of reviews, and returns a list of all entries in those JSON arrays merged into one list of all the entries.
+        '''
+        self.data = []
+        while (not completion_condition(self)) if completion_condition else True: # Execute if completion_condition is False, or if there is no completion_condition
+            if cursor: # If there is no cursor, this will skip injection on the first request
+                cursor_injection(json, url_encoded, cursor)
+            # Variable not required, but nice for readability
+            request_json = self.make_request(endpoint, json=json, url_encoded=url_encoded).json()
+            for x in data_key(request_json):
+                self.data.append(x)
+            try: # Get the cursor if it exists, otherwise terminate
+                cursor = cursor_key(request_json)
+            except:
+                break
+        return self.data
+
     def dump_json_out(self, filename: str):
         pass
 
