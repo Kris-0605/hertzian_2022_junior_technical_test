@@ -21,10 +21,5 @@ Test 18 succeeded
 Test 19 succeeded
 All tests ran successfully.
 
-IT IS NOT WORKING
-I incorrectly identified the problem from before.
-The ID generation was fine, it turned out Steam was just giving me duplicate reviews because it returns the same cursor once you reach the end.
-I've now added code to remove duplicate reviews.
-I believe I can fix the problem of only getting 40 reviews by changing the filter from "most helpful" to "most recent".
-However, I could also try increasing the day_range. Either option is possible.
-In the event of an actual test, I would ask about this. However, right now I am going to make the decision to do the first option.
+SUCCESS!
+All tests now run successfully, and I have a JSON with 5000 unique reviews.

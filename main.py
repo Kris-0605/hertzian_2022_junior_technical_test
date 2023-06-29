@@ -73,7 +73,7 @@ class SteamReviewCrawler(ReviewCrawler): # Inherits from ReviewCrawler, only con
         self.__franchise, self.__gameName = franchise, gameName
         self.follow_cursor(
             f"https://store.steampowered.com/appreviews/{appID}",
-            url_encoded={"json": "1", "num_per_page": "100"}, # More could be specified, but nothing was given in the PDF, I would ask about more if this was the real thing
+            url_encoded={"json": "1", "num_per_page": "100", "filter": "updated"}, # More could be specified, but nothing was given in the PDF, I would ask about more if this was the real thing
             cursor="*",
             completion_condition=lambda review_crawler: len(review_crawler.data) >= 5000,
         )
