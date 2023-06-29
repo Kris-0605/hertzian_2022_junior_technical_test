@@ -23,7 +23,7 @@ class ReviewCrawler: # Generic crawler
                 time.sleep(self.RETRY_DELAY) # Maybe we're getting rate limited?
         raise requests.ConnectionError(f"Something went wrong connecting to {endpoint} with JSON input {json} and URL encoded input {url_encoded}")
 
-    def __follow_cursor(self,
+    def follow_cursor(self,
                       endpoint: str,
                       json={},
                       url_encoded={},
@@ -52,7 +52,7 @@ class ReviewCrawler: # Generic crawler
             if cursor: # If there is no cursor, this will skip injection on the first request
                 cursor_injection(json, url_encoded, cursor)
             # Variable not required, but nice for readability
-            request_json = self.make_request(endpoint, json=json, url_encoded=url_encoded).json()
+            request_json = self.__make_request(endpoint, json=json, url_encoded=url_encoded).json()
             for x in data_key(request_json):
                 self.data.append(x)
             try: # Get the cursor if it exists, otherwise terminate
@@ -68,7 +68,7 @@ class ReviewCrawler: # Generic crawler
 class SteamReviewCrawler(ReviewCrawler): # Inherits from ReviewCrawler, only contains methods specific to Steam
     def __init__(self, appID, franchise, gameName):
         self.__franchise, self.__gameName = franchise, gameName
-        super().__follow_cursor(
+        self.follow_cursor(
             f"https://store.steampowered.com/appreviews/{appID}",
             url_encoded={"json": "1", "num_per_page": "100"}, # More could be specified, but nothing was given in the PDF, I would ask about more if this was the real thing
             cursor="*",
