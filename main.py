@@ -7,7 +7,7 @@ class ReviewCrawler: # Generic crawler
     NUMBER_OF_RETRIES = 5
     RETRY_DELAY = 1
 
-    def make_request(self, endpoint: str, json={}, url_encoded={}) -> dict:
+    def __make_request(self, endpoint: str, json={}, url_encoded={}) -> dict:
         '''
         Makes request to endpoint with JSON and/or URL encoded data if necessary
         If errors, retries for self.NUMBER_OF_RETRIES before raising an error
@@ -23,7 +23,7 @@ class ReviewCrawler: # Generic crawler
                 time.sleep(self.RETRY_DELAY) # Maybe we're getting rate limited?
         raise requests.ConnectionError(f"Something went wrong connecting to {endpoint} with JSON input {json} and URL encoded input {url_encoded}")
 
-    def follow_cursor(self,
+    def __follow_cursor(self,
                       endpoint: str,
                       json={},
                       url_encoded={},
