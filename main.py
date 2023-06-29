@@ -77,7 +77,30 @@ class SteamReviewCrawler(ReviewCrawler): # Inherits from ReviewCrawler, only con
         self.data = self.__process_data(self.data)
     
     def __process_data(self, old_data):
-        pass
+        "Formats the raw JSON into the right format"
+        new_data = []
+        review_counter = 0
+        for x in old_data:
+            time_obj = time.localtime(x["timestamp_updated"]) # Could be changed to created, but was not specified and this seemed more useful
+            new_data.append({
+                "id": str(uuid.uuid5(uuid.NAMESPACE_DNS, str(x["recommendationid"]))), # Generates version 5 UUID from unique recommendation ID
+                "author": str(uuid.uuid5(uuid.NAMESPACE_DNS, str(x["author"]["steamid"]))), # Generates version 5 (hased, unreversible) UUID from unique steam user ID
+                "date": f"{time_obj.tm_year}-{time_obj.tm_mon}-{time_obj.tm_mday}", # Formatting into yyyy-mm-dd format
+                "hours": int(x["author"]["playtime_at_review"]), # Could be changed to playtime_forever, not specified, this seemed more useful
+                "content": x["review"],
+                "comments": int(x["comment_count"]),
+                "source": "steam",
+                "helpful": int(x["votes_up"]),
+                "funny": int(x["votes_funny"]),
+                "recommended": x["voted_up"],
+                "franchise": self.franchise,
+                "gameName": self.gameName,
+            })
+            review_counter += 1
+            if review_counter == 5000:
+                # Could I do this with return new_data[:5000]? Yes. However that would take longer, so yes this if statement is messy but it's for the greater good.
+                break
+        return new_data
     
     # It's not foolproof and it looks a bit messy and can be broken, but getters is the only way to ensure that
     # the attributes haven't been modified so we can ensure the attributes are the same as at function invocation
