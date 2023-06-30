@@ -73,9 +73,6 @@ class ReviewCrawler: # Generic crawler
         # "data = data for every entry where the timestamp is between the two given dates"
         self.data = [x for x in self.data if date1 <= timestamp_key(x) <= date2]
 
-    def sort_reviews(self):
-        pass
-
     def dump_json_out(self, filename: str):
         with open(filename, "w") as f:
             json.dump(self.data, f, indent=4)
@@ -93,6 +90,7 @@ class SteamReviewCrawler(ReviewCrawler): # Inherits from ReviewCrawler, only con
         if start_date and end_date:
             self.filter_reviews(start_date, end_date, timestamp_key=lambda entry: entry["timestamp_updated"])
         self.data = self.__process_data(self.data)
+        self.sort_reviews()
     
     def __process_data(self, old_data):
         "Formats the raw JSON into the right format"
@@ -122,6 +120,12 @@ class SteamReviewCrawler(ReviewCrawler): # Inherits from ReviewCrawler, only con
                 # Could I do this with return new_data[:5000]? Yes. However that would take longer, so yes this if statement is messy but it's for the greater good.
                 break
         return new_data
+
+    # Has to be in Steam, not generalised, because we're using the ID value
+    def sort_reviews(self):
+        "Sort by date first, then ID"
+        # Surely there's no way this can fail the unit test, given it's the same code... Maybe slightly flawed on my part, the test just runs the function? Don't know how else to do it...
+        self.data.sort(key=lambda x: (time.mktime(time.strptime(x["date"], "%Y-%m-%d")), x["id"]))
     
     # It's not foolproof and it looks a bit messy and can be broken, but getters is the only way to ensure that
     # the attributes haven't been modified so we can ensure the attributes are the same as at function invocation

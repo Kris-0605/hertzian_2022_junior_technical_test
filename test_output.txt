@@ -1,4 +1,4 @@
-This is a manually added file showing the output of tests
+This is a manually added file showing the output of tests over time.
 
 Test 1 succeeded
 Test 2 succeeded
@@ -15,8 +15,7 @@ Test 12 succeeded
 Test 13 succeeded
 Test 14 succeeded
 Test 15 succeeded
-Test 16 failed
-Something went wrong, at least one test failed.
+Test 16 succeeded
+All tests ran successfully.
 
-Test 16 still isn't implemented.
-Great, now we can check the date in just one check!
+:D
