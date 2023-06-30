@@ -100,13 +100,12 @@ class SteamReviewCrawler(ReviewCrawler): # Inherits from ReviewCrawler, only con
         ids = set()
         review_counter = 0
         for x in old_data:
-            time_obj = time.localtime(x["timestamp_updated"]) # Could be changed to created, but was not specified and this seemed more useful
             id = str(uuid.uuid5(uuid.NAMESPACE_DNS, str(x["recommendationid"]))) # Generates version 5 UUID from unique recommendation ID
             if id not in ids:
                 new_data.append({
                     "id": id,
                     "author": str(uuid.uuid5(uuid.NAMESPACE_DNS, str(x["author"]["steamid"]))), # Generates version 5 (hased, unreversible) UUID from unique steam user ID
-                    "date": f"{time_obj.tm_year}-{time_obj.tm_mon:02}-{time_obj.tm_mday:02}", # Formatting into yyyy-mm-dd format
+                    "date": time.strftime("%Y-%m-%d", time.localtime(x["timestamp_updated"])), # Formatting into yyyy-mm-dd format
                     "hours": int(x["author"]["playtime_at_review"]), # Could be changed to playtime_forever, not specified, this seemed more useful
                     "content": x["review"],
                     "comments": int(x["comment_count"]),
@@ -181,15 +180,7 @@ def execute_steam_tests():
         # Verify date in yyyy-mm-dd format
         # The actual format is not specified, this is just my best guess from looking at the format given in the example.
         # Had this been an actual technical test instead of a practice, I would have emailed someone to ask
-        lambda: all(len(x["date"]) == 10 for x in data), # Check string length is 10
-        lambda: all(x["date"][4] == "-" for x in data), # Check for hyphens in 5th and 8th characters
-        lambda: all(x["date"][7] == "-" for x in data),
-        # Checks that first 4 characters of the date in every entry is within the range of Steam's launch in 2003, and next year (in case it's New Years Eve and timezones)
-        lambda: all(2003 <= int(x["date"][:4]) <= time.localtime().tm_year + 1 for x in data),
-        # Check that the month is between 1 and 12 inclusive by checking the 6th and 7th characters
-        lambda: all(1 <= int(x["date"][5:7]) <= 12 for x in data),
-        # Check that the day is between 1 and 31 inclusive by checking the last 2 characters
-        lambda: all(1 <= int(x["date"][8:]) <= 31 for x in data),
+        lambda: all(time.strptime(x["date"], "%Y-%m-%d") for x in data), # Raises error if wrong format
         # Verify that "author" and "id" are in UUID format
         lambda: all(uuid.UUID(x["author"], version=5) for x in data), # Will raise ValueError if a UUID is invalid
         lambda: all(uuid.UUID(x["id"], version=5) for x in data),

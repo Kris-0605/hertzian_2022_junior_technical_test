@@ -15,14 +15,8 @@ Test 12 succeeded
 Test 13 succeeded
 Test 14 succeeded
 Test 15 succeeded
-Test 16 succeeded
-Test 17 succeeded
-Test 18 succeeded
-Test 19 succeeded
-Test 20 succeeded
-Test 21 failed
+Test 16 failed
 Something went wrong, at least one test failed.
 
-Test 21 still isn't implemented.
-Test 20 was fixed by altering it so that the input is midnight on a day, instead of half-way through a day.
-The function still works, however the unit test can't work unless this is the case because a review can meet the timestamp requirement, but fail the unit test due to the unit test only reading the date, not the time.
+Test 16 still isn't implemented.
+Great, now we can check the date in just one check!
