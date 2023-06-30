@@ -205,4 +205,10 @@ def execute_steam_tests():
         return False
 
 if __name__ == "__main__":
-    execute_steam_tests()
+    # I'd add input validation but this is just for testing and you know what to put in
+    if (inp := input("Enter 'test' for unit tests, or appID,franchise,gameName or appID,franchise,gameName,start_yyyy-mm-dd,end_yyyy-mm-dd >>> ")) == "test":
+        execute_steam_tests()
+    elif len(split := inp.split(",")) == 3:
+        crawler = SteamReviewCrawler(*split).dump_json_out(f"{split[0]}.json")
+    elif len(split) == 5:
+        crawler = SteamReviewCrawler(split[0], split[1], split[2], start_date=time.mktime(time.strptime(split[3], "%Y-%m-%d")), end_date=time.mktime(time.strptime(split[4], "%Y-%m-%d"))).dump_json_out(f"{split[0]}.json")
