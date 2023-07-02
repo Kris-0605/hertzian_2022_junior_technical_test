@@ -104,7 +104,7 @@ class SteamReviewCrawler(ReviewCrawler): # Inherits from ReviewCrawler, only con
                     "id": id,
                     "author": str(uuid.uuid5(uuid.NAMESPACE_DNS, str(x["author"]["steamid"]))), # Generates version 5 (hased, unreversible) UUID from unique steam user ID
                     "date": time.strftime("%Y-%m-%d", time.localtime(x["timestamp_updated"])), # Formatting into yyyy-mm-dd format
-                    "hours": int(x["author"]["playtime_at_review"]), # Could be changed to playtime_forever, not specified, this seemed more useful
+                    "hours": int(x["author"]["playtime_at_review" if "playtime_at_review" in x["author"].keys() else "playtime_forever"]), # Changed to add backup if no playtime_at_review key
                     "content": x["review"],
                     "comments": int(x["comment_count"]),
                     "source": "steam",
